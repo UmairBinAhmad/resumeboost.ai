@@ -4,6 +4,7 @@ body {
   font-family: 'Arial', sans-serif;
   padding-top: 50px;
 }
+
 .container {
   max-width: 70%;
   background: linear-gradient(145deg, #2a2a3a, #1a1a2a);
@@ -11,40 +12,73 @@ body {
   padding: 20px;
   box-shadow: 5px 5px 15px #121212, -5px -5px 15px #282838;
 }
+
 .btn-primary {
   width: 200px;
   background: linear-gradient(145deg, #6200ea, #3700b3);
   border: none;
   transition: background 0.3s;
 }
+
 .btn-primary:hover {
   background: linear-gradient(145deg, #3700b3, #6200ea);
 }
+
+.btn-secondary {
+  /* width: 200px; */
+  background: linear-gradient(145deg, #03dac6, #018786);
+  border: none;
+  transition: background 0.3s;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(145deg, #018786, #03dac6);
+}
+
 h1 {
   color: #bb86fc;
 }
+
 .result {
   margin-top: 20px;
 }
+
 .analysis {
   background: #2a2a3a;
   padding: 10px;
   border-radius: 10px;
   box-shadow: inset 2px 2px 5px #121212, inset -2px -2px 5px #282838;
 }
+
 pre {
   white-space: pre-wrap;
   word-wrap: break-word;
   color: #ffffff;
 }
+
 .spinner-border {
   margin-left: 10px;
 }
 
-
 .navbar-dark .navbar-nav .nav-link {
   color: #c7c7d1;
 }
+
 .navbar-brand {
   color: #bb86fc;
+}
+
+.jumbotron {
+  background: transparent;
+  color: #c7c7d1;
+  padding: 40px;
+  border-radius: 10px;
+}
+
+.jumbotron hr {
+  border-top: 1px solid #444;
+}
+
+.jumbotron .lead {
+  color: #888;
 }
