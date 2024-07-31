@@ -43,21 +43,25 @@
     <form id="jobMatchingForm">
       <div class="form-group">
         <label for="jobDescription">Job Description</label>
-        <textarea class="form-control" id="jobDescription" rows="4" required></textarea>
+        <textarea class="form-control" id="jobDescription" rows="4" placeholder="Enter the job description..." required></textarea>
       </div>
       <div class="form-group">
         <label for="minExperience">Minimum Experience Required (years)</label>
-        <input type="number" class="form-control" id="minExperience" required>
+        <input type="number" class="form-control" id="minExperience" placeholder="Enter the minimum experience required..." required>
       </div>
       <div class="form-group">
         <label for="designation">Designation</label>
-        <input type="text" class="form-control" id="designation" required>
+        <input type="text" class="form-control" id="designation" placeholder="Enter the designation..." required>
+      </div>
+      <div class="form-group">
+        <label for="numCandidates">Number of Candidates to Shortlist</label>
+        <input type="number" class="form-control" id="numCandidates" placeholder="Enter the number of candidates..." required>
       </div>
       <div class="form-group">
         <label for="multipleResumes">Upload Resumes (PDF or DOCX)</label>
         <input type="file" class="form-control-file" id="multipleResumes" accept=".pdf, .docx" multiple required>
       </div>
-      <button type="submit" class="btn btn-primary btn-block">Shortlist Candidates</button>
+      <button type="submit" class="btn btn-primary btn-block" id="shortlistButton">Shortlist Candidates</button>
     </form>
     <div class="result" id="jobMatchingResult">
       <!-- Job Matching Results will be displayed here -->
@@ -65,12 +69,20 @@
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
   <script>
     document.getElementById('jobMatchingForm').addEventListener('submit', async function (event) {
       event.preventDefault();
+
+      // Show spinner and change button text
+      const shortlistButton = document.getElementById('shortlistButton');
+      shortlistButton.innerHTML = 'Analyzing... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+      shortlistButton.disabled = true;
+
       const jobDescription = document.getElementById('jobDescription').value;
       const minExperience = document.getElementById('minExperience').value;
       const designation = document.getElementById('designation').value;
+      const numCandidates = document.getElementById('numCandidates').value;
       const fileInput = document.getElementById('multipleResumes');
       const files = fileInput.files;
 
@@ -100,7 +112,8 @@
         const data = {
           contents: [{
             parts: [
-              { text: `Shortlist the following candidates for the job description: ${jobDescription}. Minimum experience required: ${minExperience} years. Designation: ${designation}. Provide an HTML response in a tabular form with each candidate’s resume file name in first column and a one-line reason for shortlisting in 2nd column` },
+              { text: `Shortlist the following candidates for the job description: ${jobDescription}. Minimum experience required: ${minExperience} years. Designation: ${designation}. Number of candidates: ${numCandidates}. \n
+                    Provide the response in a structured format. For each shortlisted candidate: Display the resume file name in bold. On the next line, provide a one-line reason for shortlisting. and in last line include a score for the resume for relevant job on a scale of 1-10. \n` },
               ...resumes.map(resume => ({
                 inline_data: {
                   mime_type: resume.type,
@@ -124,19 +137,26 @@
         }
 
         const result = await response.json();
-        
         displayJobMatchingResults(result);
       } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
         alert('Error matching job candidates. Please try again later.');
+      } finally {
+        // Reset button text and enable it
+        shortlistButton.innerHTML = 'Shortlist Candidates';
+        shortlistButton.disabled = false;
       }
     });
 
     function displayJobMatchingResults(result) {
-      
       const jobMatchingResultDiv = document.getElementById('jobMatchingResult');
+      const analysis = result.candidates[0].content.parts[0].text;
+      const converter = new showdown.Converter();
+      const html = converter.makeHtml(analysis);
       jobMatchingResultDiv.innerHTML = `
-        <pre>${JSON.stringify(result.candidates[0].content.parts[0].text, null, 2)}</pre>
+          <div class="analysis">
+            ${html}
+          </div>
       `;
     }
   </script>
