@@ -47,9 +47,52 @@
       <a class="btn btn-primary btn-lg" href="resume.html" role="button">Upload Resume</a>
       <a class="btn btn-secondary btn-lg" href="resume-shortlist.html" role="button">AI Resume Shortlisting</a>
     </div>
+    
+    <div class="text-center">
+      <button class="btn btn-info" onclick="getLocation()">Get My Location</button>
+      <p id="locationOutput"></p>
+    </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    // Function to fetch the user's location
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        document.getElementById('locationOutput').innerText = "Geolocation is not supported by this browser.";
+      }
+      console.log("Fetching location...");
+    }
+
+    // Function to handle the successful retrieval of location
+    function showPosition(position) {
+      var latitude = position.coords.latitude;
+      var longitude = position.coords.longitude;
+      document.getElementById('locationOutput').innerText = "Latitude: " + latitude + ", Longitude: " + longitude;
+      //  print location on console
+      console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+    }
+
+    // Function to handle errors during the location retrieval
+    function showError(error) {
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          document.getElementById('locationOutput').innerText = "User denied the request for Geolocation.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          document.getElementById('locationOutput').innerText = "Location information is unavailable.";
+          break;
+        case error.TIMEOUT:
+          document.getElementById('locationOutput').innerText = "The request to get user location timed out.";
+          break;
+        case error.UNKNOWN_ERROR:
+          document.getElementById('locationOutput').innerText = "An unknown error occurred.";
+          break;
+      }
+    }
+  </script>
 </body>
 
 </html>
